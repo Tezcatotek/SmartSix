@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitoreo de Tinaco</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
 
@@ -84,11 +84,16 @@
         <p id="water-level-volume">826 L</p>
       </div>
       
-      <!-- Indicador de nivel de pH con animación de llenado -->
+      <!-- Indicador de nivel de pH como tacómetro -->
       <div class="indicator ph-level">
         <h3>Nivel pH</h3>
-        <div class="tank">
-          <div class="ph-fill" id="ph-fill"></div>
+        <div class="tachometer">
+          <svg viewBox="0 0 100 50" class="gauge">
+            <!-- Semicírculo de fondo -->
+            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#ddd" stroke-width="10"/>
+            <!-- Indicador de aguja -->
+            <line id="needle" x1="50" y1="50" x2="50" y2="15" stroke="#4caf50" stroke-width="2" />
+          </svg>
         </div>
         <p id="ph-level-value">7.2</p>
       </div>
@@ -115,15 +120,21 @@
       </div>
     </div>
   </section>
-    <section id="chat" class="section hidden">
+  <section id="chat" class="section hidden">
+    <div class="chat-frame">
       <h2>Chat con IA</h2>
       <p>Puedes hacer preguntas y obtener respuestas rápidas sobre el sistema de monitoreo.</p>
-      <div class="chat-container">
-        <div class="chat-messages" id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="Escribe tu pregunta...">
+      
+      <!-- Área de mensajes -->
+      <div class="chat-messages" id="chat-messages"></div>
+      
+      <!-- Campo de entrada y botón de envío -->
+      <div class="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." />
         <button onclick="sendChat()">Enviar</button>
       </div>
-    </section>
+    </div>
+  </section>
   </main>
 </body>
 </html>

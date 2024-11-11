@@ -1,3 +1,5 @@
+import knowledgeBase from './knowledgeBase.js';
+
 document.addEventListener("DOMContentLoaded", function() {
   const loader = document.getElementById("loader");
   const sidebar = document.querySelector(".sidebar");
@@ -63,8 +65,14 @@ function updateWaterLevel(level) {
 
 function updatePHLevel(level) {
   const phFill = document.getElementById("ph-fill");
-  phFill.style.height = `${level * 10}%`;
+  const needle = document.getElementById("needle");
+
+  // Actualiza el valor de pH en el texto
   document.getElementById("ph-level-value").textContent = `${level}`;
+
+  // Calcula el ángulo de la aguja (0° en pH 6.5 y 180° en pH 8.5)
+  const angle = ((level - 6.5) / 2) * 180;
+  needle.style.transform = `rotate(${angle}deg)`;
 }
 
 function simulateRealTimeLevels() {
@@ -103,20 +111,37 @@ window.saveLevels = function() {
   }
 };
 
-  function sendChat() {
-    const input = document.getElementById("chat-input");
-    const message = input.value;
-    if (message.trim()) {
-      const chatMessages = document.getElementById("chat-messages");
-      const newMessage = document.createElement("div");
-      newMessage.textContent = `You: ${message}`;
-      chatMessages.appendChild(newMessage);
-      input.value = "";
-    }
+window.sendChat = function() {
+  const input = document.getElementById("chat-input");
+  const message = input.value.trim();
+  const chatMessages = document.getElementById("chat-messages");
+
+  if (message) {
+    // Mostrar el mensaje del usuario
+    const userMessage = document.createElement("div");
+    userMessage.textContent = `Tú: ${message}`;
+    chatMessages.appendChild(userMessage);
+
+    // Buscar respuesta en la base de conocimiento
+    const response = knowledgeBase[message] || "Lo siento, no tengo una respuesta para esa pregunta.";
+
+    // Mostrar la respuesta
+    setTimeout(() => {
+      const aiMessage = document.createElement("div");
+      aiMessage.textContent = `IA: ${response}`;
+      chatMessages.appendChild(aiMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 500);
+
+    // Limpiar el campo de entrada
+    input.value = "";
   }
-  
-  document.getElementById("chat-input").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-      sendChat();
-    }
-  });  
+};
+
+// Añadir el evento para enviar con Enter
+document.getElementById("chat-input").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    window.sendChat();
+  }
+}); 
